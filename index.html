@@ -1,69 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
-  <title>AQ İndeksi Kalkulyatoru</title>
+  <meta charset="UTF-8">
+  <title>Diabet Risk İndeksi Kalkulyatoru</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background: #6ED8D0; /* UPDATED BACKGROUND */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 25px;
+      width: 450px;
+      border-radius: 15px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #146C6A;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #0E4E4D;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.15);
+    }
+  </style>
+
 </head>
 <body>
-  <h2>AQ İndeksi Hesablama</h2>
-  
+
+<div class="container">
+  <h2>Diabet Risk İndeksi Kalkulyatoru</h2>
+
   <form id="aqForm">
-    Yaş: <input type="number" id="age"><br>
-    Bel çevrəsi (sm): <input type="number" id="waist"><br>
-    Sistolik təzyiq (mmHg): <input type="number" id="sbp"><br>
-    Diastolik təzyiq (mmHg): <input type="number" id="dbp"><br>
-    BKI (kq/m²): <input type="number" id="bmi" step="0.1"><br><br>
 
-    <label>1. Hər gün 30 dəq fiziki aktivlik? </label>
-    <select id="G1"><option value="1">Bəli</option><option value="0">Xeyr</option></select><br>
+    <label>Yaş:</label>
+    <input type="number" id="age" required>
 
-    <label>2. Yüksək arterial təzyiq olubmu?</label>
-    <select id="G2"><option value="1">Bəli</option><option value="0">Xeyr</option></select><br>
+    <label>Bel çevrəsi (sm):</label>
+    <input type="number" id="waist" required>
 
-    <label>3. Yaxın qohumlarda şəkərli diabet?</label>
-    <select id="G3"><option value="1">Bəli</option><option value="0">Xeyr</option></select><br>
+    <label>Sistolik təzyiq (mmHg):</label>
+    <input type="number" id="sbp" required>
 
-    <label>4. Qanda qlükoza səviyyəsi yüksək olubmu?</label>
-    <select id="G4"><option value="1">Bəli</option><option value="0">Xeyr</option></select><br><br>
+    <label>Diastolik təzyiq (mmHg):</label>
+    <input type="number" id="dbp" required>
 
-    <button type="button" onclick="calculateAQ()">Hesabla</button>
+    <label>Bədən kütlə indeksi (BKI):</label>
+    <input type="number" id="bmi" step="0.1" required>
+
+    <label>1. Gündəlik 30 dəqiqə fiziki aktivlik?</label>
+    <select id="G1"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+
+    <label>2. Yüksək arterial təzyiq olub?</label>
+    <select id="G2"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+
+    <label>3. Qohumlarda diabet?</label>
+    <select id="G3"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+
+    <label>4. Qanda yüksək qlükoza olub?</label>
+    <select id="G4"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+
+    <button type="button" onclick="calculateAll()">Hesabla</button>
   </form>
 
-  <h3 id="result"></h3>
+  <div class="result-box" id="result"></div>
 
-  <script>
-    function calculateAQ() {
-      const a = parseFloat(document.getElementById("age").value);
-      const b = parseFloat(document.getElementById("waist").value);
-      const c = parseFloat(document.getElementById("sbp").value);
-      const d = parseFloat(document.getElementById("dbp").value);
-      const f = parseFloat(document.getElementById("bmi").value);
+</div>
 
-      const G1 = parseInt(document.getElementById("G1").value);
-      const G2 = parseInt(document.getElementById("G2").value);
-      const G3 = parseInt(document.getElementById("G3").value);
-      const G4 = parseInt(document.getElementById("G4").value);
 
-      const e = 2.61 * G1 + 1.61 * G2 + 7.43 * G3 + 1.89 * G4 + 14.10;
+<script>
+function calculateAll() {
 
-      const Y1 = 10 * Math.log(a * b);
-      const Y2 = 10 * Math.log(a * c);
-      const Y3 = 10 * Math.log(a * d);
-      const Y4 = 10 * Math.log(b * c);
-      const Y5 = 10 * Math.log(b * d);
+  const a = parseFloat(document.getElementById("age").value);
+  const b = parseFloat(document.getElementById("waist").value);
+  const c = parseFloat(document.getElementById("sbp").value);
+  const d = parseFloat(document.getElementById("dbp").value);
+  const f = parseFloat(document.getElementById("bmi").value);
 
-      const Y6 = 10 * Math.log(a * e);
-      const Y7 = 10 * Math.log(b * e);
-      const Y8 = 10 * Math.log(f * e);
-      const Y9 = 10 * Math.log(c * e);
-      const Y10 = 10 * Math.log(d * e);
+  const G1 = parseInt(document.getElementById("G1").value);
+  const G2 = parseInt(document.getElementById("G2").value);
+  const G3 = parseInt(document.getElementById("G3").value);
+  const G4 = parseInt(document.getElementById("G4").value);
 
-      const X1 = Y1 + Y2 + Y3 + Y4 + Y5;
-      const X2 = Y6 + Y7 + Y8 + Y9 + Y10;
+  if ([a,b,c,d,f].some(isNaN)) {
+    alert("Zəhmət olmasa bütün xanaları doldurun!");
+    return;
+  }
 
-      const AQ = -26.9391 + 0.1065 * X1 + 0.3147 * X2;
+  const e = 2.61*G1 + 1.61*G2 + 7.43*G3 + 1.89*G4 + 14.10;
 
-      document.getElementById("result").innerText = "AQ indeksi: " + AQ.toFixed(2) + " mq/dl";
-    }
-  </script>
+  const Y1 = 10 * Math.log(a*b);
+  const Y2 = 10 * Math.log(a*c);
+  const Y3 = 10 * Math.log(a*d);
+  const Y4 = 10 * Math.log(b*c);
+  const Y5 = 10 * Math.log(b*d);
+
+  const Y6 = 10 * Math.log(a*e);
+  const Y7 = 10 * Math.log(b*e);
+  const Y8 = 10 * Math.log(f*e);
+  const Y9 = 10 * Math.log(c*e);
+  const Y10 = 10 * Math.log(d*e);
+
+  const X1 = Y1 + Y2 + Y3 + Y4 + Y5;
+  const X2 = Y6 + Y7 + Y8 + Y9 + Y10;
+
+  const AQ = -26.9391 + 0.1065*X1 + 0.3147*X2;
+  const Hba1c = 6.3573 - 0.0032*X1 + 0.1176*X2;
+  const GTT = 72.7201 + 0.2308*X1 + 0.3458*X2;
+
+  document.getElementById("result").innerHTML = `
+    <b>AQ İndeksi:</b> ${AQ.toFixed(2)} mq/dl<br>
+    <b>HbA1c İndeksi:</b> ${Hba1c.toFixed(3)} %<br>
+    <b>Qlükozaya Qarşı Tolerantlıq (GTT) İndeksi:</b> ${GTT.toFixed(2)} mq/dl
+  `;
+}
+</script>
+
 </body>
 </html>
