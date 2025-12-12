@@ -1,159 +1,400 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>Diabet Risk İndeksi Kalkulyatoru</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tip 2 Diabet / Prediabet Sorğu Anketi</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 40px;
-      background: #6ED8D0; /* UPDATED BACKGROUND */
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+    :root{
+      --purple-1:#3b2aa6;
+      --purple-2:#6b39b6;
+      --purple-3:#8b65d6;
+      --line:#cfcfe6;
+      --cell:#ffffff;
+      --muted:#f3f1fb;
+      --text:#111;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#e9e9ef;
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      padding:22px;
     }
 
-    .container {
-      background: rgba(255, 255, 255, 0.92);
-      padding: 25px;
-      width: 450px;
-      border-radius: 15px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    .sheet{
+      width:min(980px, 100%);
+      background:#fff;
+      border:1px solid #d6d6e6;
+      box-shadow:0 10px 26px rgba(0,0,0,.12);
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
+    /* Header bar (purple) */
+    .topbar{
+      background: linear-gradient(90deg, var(--purple-1), var(--purple-2), var(--purple-3));
+      color:#fff;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo{
+      width:48px; height:48px;
+      background:#fff;
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#333;
+      font-weight:700;
+      flex:0 0 auto;
+    }
+    .titlewrap{
+      flex:1 1 auto;
+      text-align:center;
+      line-height:1.15;
+      padding-right:48px; /* balances logo */
+    }
+    .titlewrap .t1{font-size:18px; font-weight:700;}
+    .titlewrap .t2{font-size:22px; font-weight:900; letter-spacing:.5px; margin-top:3px;}
+
+    /* Table */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+    th, td{
+      border:1px solid var(--line);
+      padding:10px 10px;
+      background:var(--cell);
+      vertical-align:middle;
+    }
+    .col-no{width:54px; text-align:center; font-weight:700; background:var(--muted)}
+    .col-label{width:auto}
+    .col-input{width:220px}
+    .col-unit{width:130px; text-align:center; color:#333; background:var(--muted); font-weight:700}
+
+    .unit{
+      font-size:13px;
+      font-weight:700;
     }
 
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid #bbb;
-      border-radius: 6px;
-      font-size: 15px;
+    input[type="number"]{
+      width:100%;
+      padding:9px 10px;
+      border:1px solid #bdbdd9;
+      border-radius:6px;
+      font-size:15px;
+      background:#fff;
     }
 
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #146C6A;
-      color: #fff;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.2s;
+    /* Yes/No boxes like Excel */
+    .yn{
+      display:flex;
+      gap:18px;
+      justify-content:flex-end;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .yn label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      font-weight:700;
+    }
+    .yn input{
+      appearance:none;
+      width:18px;
+      height:18px;
+      border:2px solid #3a2aa6;
+      border-radius:3px;
+      background:#fff;
+      display:inline-block;
+      position:relative;
+    }
+    .yn input:checked{
+      background:#3a2aa6;
+      box-shadow:inset 0 0 0 2px #fff;
     }
 
-    button:hover {
-      background: #0E4E4D;
+    /* Section bar */
+    .sectionbar{
+      background: linear-gradient(90deg, var(--purple-1), var(--purple-2), var(--purple-3));
+      color:#fff;
+      font-weight:900;
+      letter-spacing:.6px;
+      text-align:center;
+      padding:10px;
+      border-top:1px solid #5e4bc0;
     }
 
-    .result-box {
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 10px;
-      background: #ffffff;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.15);
+    .results{
+      border-top:1px solid var(--line);
+    }
+    .result-row td{background:#faf9ff}
+    .result-value{
+      font-weight:900;
+      font-size:16px;
+      text-align:right;
+    }
+    .btnrow{
+      display:flex;
+      gap:10px;
+      padding:14px 12px 18px;
+      justify-content:flex-end;
+      background:#fff;
+      border-top:1px solid var(--line);
+    }
+    button{
+      border:0;
+      padding:10px 14px;
+      border-radius:8px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background:#3a2aa6;
+      color:#fff;
+    }
+    .btn-secondary{
+      background:#e7e6f7;
+      color:#1b144d;
+    }
+
+    .smallnote{
+      padding:0 12px 14px;
+      color:#555;
+      font-size:12px;
+    }
+
+    @media (max-width:720px){
+      .col-unit{display:none}
+      .col-input{width:200px}
+      .titlewrap{padding-right:0}
     }
   </style>
-
 </head>
+
 <body>
+  <div class="sheet">
 
-<div class="container">
-  <h2>Diabet Risk İndeksi Kalkulyatoru</h2>
+    <div class="topbar">
+      <div class="logo">ECO</div>
+      <div class="titlewrap">
+        <div class="t1">Şəkərli diabet tip2 və Prediabeti aşkarlayan</div>
+        <div class="t2">SORĞU ANKETİ</div>
+      </div>
+    </div>
 
-  <form id="aqForm">
+    <table aria-label="Sorğu anketi">
+      <tbody>
+        <tr>
+          <td class="col-no">1</td>
+          <td class="col-label"><b>Yaş</b></td>
+          <td class="col-input"><input id="age" type="number" min="1" step="1" placeholder="məs: 45"></td>
+          <td class="col-unit"><span class="unit"></span></td>
+        </tr>
+        <tr>
+          <td class="col-no">2</td>
+          <td class="col-label"><b>Bel çevrəsi</b></td>
+          <td class="col-input"><input id="wc" type="number" min="1" step="0.1" placeholder="sm"></td>
+          <td class="col-unit"><span class="unit">sm</span></td>
+        </tr>
+        <tr>
+          <td class="col-no">3</td>
+          <td class="col-label"><b>Sistolik arterial təzyiq</b></td>
+          <td class="col-input"><input id="sbp" type="number" min="1" step="1" placeholder="mmHg"></td>
+          <td class="col-unit"><span class="unit">mmHg</span></td>
+        </tr>
+        <tr>
+          <td class="col-no">4</td>
+          <td class="col-label"><b>Diastolik arterial təzyiq</b></td>
+          <td class="col-input"><input id="dbp" type="number" min="1" step="1" placeholder="mmHg"></td>
+          <td class="col-unit"><span class="unit">mmHg</span></td>
+        </tr>
+        <tr>
+          <td class="col-no">5</td>
+          <td class="col-label"><b>Bədən kütlə indeksi</b></td>
+          <td class="col-input"><input id="bmi" type="number" min="1" step="0.1" placeholder="kq/m²"></td>
+          <td class="col-unit"><span class="unit">kq/m²</span></td>
+        </tr>
 
-    <label>Yaş:</label>
-    <input type="number" id="age" required>
+        <tr>
+          <td class="col-no">6</td>
+          <td class="col-label"><b>Fiziki aktivlik</b> (gündəlik 30 dəqiqə gəzinti və/və ya məşq?)</td>
+          <td class="col-input">
+            <div class="yn" role="group" aria-label="Fiziki aktivlik">
+              <label>Bəli <input type="radio" name="q6" value="1"></label>
+              <label>Xeyr <input type="radio" name="q6" value="0" checked></label>
+            </div>
+          </td>
+          <td class="col-unit"></td>
+        </tr>
 
-    <label>Bel çevrəsi (sm):</label>
-    <input type="number" id="waist" required>
+        <tr>
+          <td class="col-no">7</td>
+          <td class="col-label"><b>Nə vaxtsa yüksək arterial təzyiq</b> və/və ya qan təzyiqinə görə müalicə?</td>
+          <td class="col-input">
+            <div class="yn" role="group" aria-label="Yüksək arterial təzyiq">
+              <label>Bəli <input type="radio" name="q7" value="1"></label>
+              <label>Xeyr <input type="radio" name="q7" value="0" checked></label>
+            </div>
+          </td>
+          <td class="col-unit"></td>
+        </tr>
 
-    <label>Sistolik təzyiq (mmHg):</label>
-    <input type="number" id="sbp" required>
+        <tr>
+          <td class="col-no">8</td>
+          <td class="col-label"><b>Nə vaxtsa qanda yüksək qlükoza səviyyəsi?</b></td>
+          <td class="col-input">
+            <div class="yn" role="group" aria-label="Yüksək qlükoza">
+              <label>Bəli <input type="radio" name="q8" value="1"></label>
+              <label>Xeyr <input type="radio" name="q8" value="0" checked></label>
+            </div>
+          </td>
+          <td class="col-unit"></td>
+        </tr>
 
-    <label>Diastolik təzyiq (mmHg):</label>
-    <input type="number" id="dbp" required>
+        <tr>
+          <td class="col-no">9</td>
+          <td class="col-label"><b>Yaxın qohumlarda şəkərli diabet tip2</b> (ana, ata, bacı, qardaş, övlad)?</td>
+          <td class="col-input">
+            <div class="yn" role="group" aria-label="Qohumlarda diabet">
+              <label>Bəli <input type="radio" name="q9" value="1"></label>
+              <label>Xeyr <input type="radio" name="q9" value="0" checked></label>
+            </div>
+          </td>
+          <td class="col-unit"></td>
+        </tr>
+      </tbody>
+    </table>
 
-    <label>Bədən kütlə indeksi (BKI):</label>
-    <input type="number" id="bmi" step="0.1" required>
+    <div class="sectionbar">NƏTİCƏ</div>
 
-    <label>1. Gündəlik 30 dəqiqə fiziki aktivlik?</label>
-    <select id="G1"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+    <table class="results" aria-label="Nəticə">
+      <tbody>
+        <tr class="result-row">
+          <td class="col-no"></td>
+          <td class="col-label"><b>Acqarına qanda qlükoza indeksi</b>:</td>
+          <td class="col-input result-value" id="outAQ">—</td>
+          <td class="col-unit"><span class="unit">(mg/dl)</span></td>
+        </tr>
+        <tr class="result-row">
+          <td class="col-no"></td>
+          <td class="col-label"><b>Qlikohemoqlobin (HbA1c) indeksi</b>:</td>
+          <td class="col-input result-value" id="outHbA1c">—</td>
+          <td class="col-unit"><span class="unit">(mmol/mol)</span></td>
+        </tr>
+        <tr class="result-row">
+          <td class="col-no"></td>
+          <td class="col-label"><b>Qlükozaya qarşı tolerantlıq testi indeksi</b>:</td>
+          <td class="col-input result-value" id="outGTT">—</td>
+          <td class="col-unit"><span class="unit">(mg/dl)</span></td>
+        </tr>
+      </tbody>
+    </table>
 
-    <label>2. Yüksək arterial təzyiq olub?</label>
-    <select id="G2"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+    <div class="btnrow">
+      <button class="btn-secondary" type="button" onclick="fillSample()">Nümunə Doldur</button>
+      <button class="btn-primary" type="button" onclick="calculate()">HESABLA</button>
+    </div>
 
-    <label>3. Qohumlarda diabet?</label>
-    <select id="G3"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
+    <div class="smallnote">
+      Qeyd: Hesablamalarda <b>LN</b> — təbii loqarifmdir (Excel LN). BQ = X1..X5 cəmi, BS = X6..X10 cəmi.
+    </div>
 
-    <label>4. Qanda yüksək qlükoza olub?</label>
-    <select id="G4"><option value="1">Bəli</option><option value="0">Xeyr</option></select>
-
-    <button type="button" onclick="calculateAll()">Hesabla</button>
-  </form>
-
-  <div class="result-box" id="result"></div>
-
-</div>
-
+  </div>
 
 <script>
-function calculateAll() {
-
-  const a = parseFloat(document.getElementById("age").value);
-  const b = parseFloat(document.getElementById("waist").value);
-  const c = parseFloat(document.getElementById("sbp").value);
-  const d = parseFloat(document.getElementById("dbp").value);
-  const f = parseFloat(document.getElementById("bmi").value);
-
-  const G1 = parseInt(document.getElementById("G1").value);
-  const G2 = parseInt(document.getElementById("G2").value);
-  const G3 = parseInt(document.getElementById("G3").value);
-  const G4 = parseInt(document.getElementById("G4").value);
-
-  if ([a,b,c,d,f].some(isNaN)) {
-    alert("Zəhmət olmasa bütün xanaları doldurun!");
-    return;
+  function getRadio(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? Number(el.value) : 0;
   }
 
-  const e = 2.61*G1 + 1.61*G2 + 7.43*G3 + 1.89*G4 + 14.10;
+  // Safe ln: if value <= 0, return NaN
+  function ln(x){
+    return (x > 0) ? Math.log(x) : NaN;
+  }
 
-  const Y1 = 10 * Math.log(a*b);
-  const Y2 = 10 * Math.log(a*c);
-  const Y3 = 10 * Math.log(a*d);
-  const Y4 = 10 * Math.log(b*c);
-  const Y5 = 10 * Math.log(b*d);
+  // ΣAn (from your sheet logic)
+  function sigmaAn(q6, q7, q8, q9){
+    // ΣAn = 2.61*Q6 + 1.61*Q7 + 7.43*Q9 + 1.89*Q8 + 14.10
+    return 2.61*q6 + 1.61*q7 + 7.43*q9 + 1.89*q8 + 14.10;
+  }
 
-  const Y6 = 10 * Math.log(a*e);
-  const Y7 = 10 * Math.log(b*e);
-  const Y8 = 10 * Math.log(f*e);
-  const Y9 = 10 * Math.log(c*e);
-  const Y10 = 10 * Math.log(d*e);
+  function calculate(){
+    const age = Number(document.getElementById("age").value);
+    const wc  = Number(document.getElementById("wc").value);
+    const sbp = Number(document.getElementById("sbp").value);
+    const dbp = Number(document.getElementById("dbp").value);
+    const bmi = Number(document.getElementById("bmi").value);
 
-  const X1 = Y1 + Y2 + Y3 + Y4 + Y5;
-  const X2 = Y6 + Y7 + Y8 + Y9 + Y10;
+    if(!age || !wc || !sbp || !dbp || !bmi){
+      alert("Zəhmət olmasa 1–5 sahələrini doldurun.");
+      return;
+    }
 
-  const AQ = -26.9391 + 0.1065*X1 + 0.3147*X2;
-  const Hba1c = 6.3573 - 0.0032*X1 + 0.1176*X2;
-  const GTT = 72.7201 + 0.2308*X1 + 0.3458*X2;
+    const q6 = getRadio("q6"); // fiziki aktivlik
+    const q7 = getRadio("q7"); // HTN / müalicə
+    const q8 = getRadio("q8"); // yüksək qlükoza
+    const q9 = getRadio("q9"); // qohumlarda diabet
 
-  document.getElementById("result").innerHTML = `
-    <b>AQ İndeksi:</b> ${AQ.toFixed(2)} mq/dl<br>
-    <b>HbA1c İndeksi:</b> ${Hba1c.toFixed(3)} %<br>
-    <b>Qlükozaya Qarşı Tolerantlıq (GTT) İndeksi:</b> ${GTT.toFixed(2)} mq/dl
-  `;
-}
+    const sAn = sigmaAn(q6, q7, q8, q9);
+
+    // X1..X10 exactly like your Excel labels
+    const X1 = 10 * ln(age * wc);
+    const X2 = 10 * ln(age * sbp);
+    const X3 = 10 * ln(age * dbp);
+    const X4 = 10 * ln(wc  * sbp);
+    const X5 = 10 * ln(wc  * dbp);
+
+    const X6  = 10 * ln(age * sAn);
+    const X7  = 10 * ln(wc  * sAn);
+    const X8  = 10 * ln(bmi * sAn);
+    const X9  = 10 * ln(sbp * sAn);
+    const X10 = 10 * ln(dbp * sAn);
+
+    const anyBad = [X1,X2,X3,X4,X5,X6,X7,X8,X9,X10].some(v => Number.isNaN(v) || !Number.isFinite(v));
+    if(anyBad){
+      alert("Hesablamada problem var: bəzi dəyərlər 0 və ya mənfi ola bilməz (LN üçün). Daxil etdiyiniz rəqəmləri yoxlayın.");
+      return;
+    }
+
+    // BQ = X1..X5 sum, BS = X6..X10 sum (as you said: BQ-X1, BS-X2)
+    const BQ = X1 + X2 + X3 + X4 + X5;
+    const BS = X6 + X7 + X8 + X9 + X10;
+
+    // Correct final formulas from your screenshots:
+    const AQ   = -26.9391 + 0.1065 * BQ + 0.3147 * BS;
+    const HbA1c = -6.3573 - 0.0032 * BQ + 0.1176 * BS;
+    const GTT  = -72.7201 + 0.2308 * BQ + 0.3458 * BS;
+
+    document.getElementById("outAQ").textContent   = AQ.toFixed(2);
+    document.getElementById("outHbA1c").textContent = HbA1c.toFixed(2);
+    document.getElementById("outGTT").textContent  = GTT.toFixed(2);
+  }
+
+  // Sample button so you can confirm it runs
+  function fillSample(){
+    document.getElementById("age").value = 45;
+    document.getElementById("wc").value  = 95;
+    document.getElementById("sbp").value = 130;
+    document.getElementById("dbp").value = 85;
+    document.getElementById("bmi").value = 28;
+
+    // Example answers
+    document.querySelector('input[name="q6"][value="0"]').checked = true; // Xeyr
+    document.querySelector('input[name="q7"][value="1"]').checked = true; // Bəli
+    document.querySelector('input[name="q8"][value="1"]').checked = true; // Bəli
+    document.querySelector('input[name="q9"][value="0"]').checked = true; // Xeyr
+  }
 </script>
 
 </body>
